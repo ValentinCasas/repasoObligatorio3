@@ -41,14 +41,10 @@
             android:id="@+id/action_nav_miUbicacionFragment_to_nav_ubicacionFragment"
             app:destination="@id/nav_ubicacionFragment" />
     </fragment>
-
     <fragment
-        android:id="@+id/nav_miMusica"
-        android:name="usuario.example.tpanexoa.ui.miMusica.MiMusicaFragment"
-        android:label="fragment_musica"
-        tools:layout="@layout/fragment_mi_musica" >
-
-    </fragment>
+        android:id="@+id/nav_llamarFragment"
+        android:name="usuario.example.tpanexoa.ui.llamar.LlamarFragment"
+        android:label="LlamarFragment" />
 
 
 </navigation>

@@ -22,9 +22,9 @@
             android:title="mercados" />
 
         <item
-            android:id="@+id/nav_miMusica"
-            android:icon="@android:drawable/ic_lock_silent_mode_off"
-            android:title="musica" />
+            android:id="@+id/nav_llamarFragment"
+            android:icon="@android:drawable/sym_action_call"
+            android:title="llamar" />
 
         <item
             android:id="@+id/nav_salirFragment"
