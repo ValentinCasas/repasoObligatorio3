@@ -7,18 +7,21 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-public class LlamarViewModel extends ViewModel {
+public class LlamarViewModel extends AndroidViewModel {
 
     private MutableLiveData<String> numeroTelefonico = new MutableLiveData<>();
     private MutableLiveData<Boolean> llamadaRealizada = new MutableLiveData<>();
     private MutableLiveData<String> mensajeError = new MutableLiveData<>();
-    private Application application;
 
+    public LlamarViewModel(@NonNull Application application) {
+        super(application);
+    }
 
     public void hacerLlamada(String numero, Activity activity) {
         if (numero == null || numero.trim().isEmpty()) {
@@ -39,7 +42,6 @@ public class LlamarViewModel extends ViewModel {
             }
         }
     }
-
 
     public LiveData<Boolean> getLlamadaRealizada() {
         return llamadaRealizada;

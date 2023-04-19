@@ -43,7 +43,7 @@ public class LlamarFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String numeroTelefonico = binding.etNumeroTelefonico.getText().toString();
-                viewModel.hacerLlamada(numeroTelefonico, getActivity());
+                viewModel.hacerLlamada(numeroTelefonico, requireActivity());
             }
         });
 
