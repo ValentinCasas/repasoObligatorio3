@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -29,6 +30,7 @@ public class MiUbicacionFragment extends Fragment implements OnMapReadyCallback 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
     private SupportMapFragment mapFragment;
+    private UbicacionViewModel ubicacionViewModel;
 
     public static MiUbicacionFragment newInstance() {
         return new MiUbicacionFragment();
@@ -51,26 +53,36 @@ public class MiUbicacionFragment extends Fragment implements OnMapReadyCallback 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        ubicacionViewModel = new ViewModelProvider(this).get(UbicacionViewModel.class);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
     }
 
     @Override
+
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        ubicacionViewModel.getMarcadores().observe(getViewLifecycleOwner(), markerOptionsList -> {
+            mMap.clear(); // Limpiamos todos los marcadores anteriores del mapa
+
+            for (MarkerOptions markerOptions : markerOptionsList) {
+                mMap.addMarker(markerOptions);
+            }
+        });
+
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
 
-            fusedLocationClient.getLastLocation().addOnSuccessListener(requireActivity(), location -> {
+            ubicacionViewModel.getUbicacionActual().observe(getViewLifecycleOwner(), location -> {
                 if (location != null) {
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
-
-                    agregarMarcadores(); // Agregar marcadores de los mercados cercanos
                 }
             });
+
+            ubicacionViewModel.actualizarUbicacion();
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -91,12 +103,5 @@ public class MiUbicacionFragment extends Fragment implements OnMapReadyCallback 
         }
     }
 
-    private void agregarMarcadores() {
-        LatLng mercado1 = new LatLng(-33.1862969, -66.3230453); // Coordenadas del mercado 1
-        mMap.addMarker(new MarkerOptions().position(mercado1).title("Mercado 1"));
-
-        LatLng mercado2 = new LatLng(-33.1854686, -66.3224754); // Coordenadas del mercado 2
-        mMap.addMarker(new MarkerOptions().position(mercado2).title("Mercado 2"));
-    }
-
 }
+

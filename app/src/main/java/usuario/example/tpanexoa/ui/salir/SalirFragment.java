@@ -24,9 +24,6 @@ public class SalirFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentSalirBinding.inflate(inflater, container, false);
         mostrarDialogoDeConfirmacion();
-        //NavigationView navView = binding.getRoot().findViewById(R.id.nav_view);
-        //navView.setNavigationItemSelectedListener(this);
-
         return binding.getRoot();
     }
 
