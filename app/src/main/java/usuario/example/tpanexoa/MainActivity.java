@@ -1,6 +1,7 @@
 package usuario.example.tpanexoa;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -10,42 +11,46 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import usuario.example.tpanexoa.databinding.ActivityMainBinding;
+
 public class MainActivity extends AppCompatActivity {
     private EditText etUsuario, etContrasenia;
 
     private Button btIngresar;
     private LogginActivityViewModel viewModel;
 
+    private ActivityMainBinding binding;
+
+    private LogginActivityViewModel mv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        // setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        mv = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(LogginActivityViewModel.class);
 
-        etUsuario = findViewById(R.id.etUsuario);
-        etContrasenia = findViewById(R.id.etContrasenia);
-        btIngresar = findViewById(R.id.btIngresar);
-
-        viewModel = new ViewModelProvider(this).get(LogginActivityViewModel.class);
-
-        btIngresar.setOnClickListener(new View.OnClickListener() {
+        binding.btIngresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = etUsuario.getText().toString();
-                String password = etContrasenia.getText().toString();
-
-                viewModel.setUsuario(username);
-                viewModel.setContrasenia(password);
-
-                if (viewModel.Validado()) {
-                    // Las credenciales son válidas, continuar con la siguiente actividad
-                    Intent intent = new Intent(MainActivity.this, MiMenu.class);
-                    startActivity(intent);
-                } else {
-                    // Las credenciales son inválidas, mostrar un mensaje de error
-                    Toast.makeText(MainActivity.this, "Credenciales inválidas", Toast.LENGTH_SHORT).show();
-                }
+                mv.validar(binding.etUsuario.getText().toString(), binding.etContrasenia.getText().toString());
             }
         });
 
+        mv.getResultado().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                //segunda actividad
+                Intent intent = new Intent(MainActivity.this, MiMenu.class);
+                startActivity(intent);
+            }
+        });
+        mv.getResultadoNegativo().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                binding.tvREsp.setText("Acceso Denegado");
+            }
+        });
     }
 }

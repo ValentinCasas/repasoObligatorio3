@@ -1,31 +1,26 @@
 package usuario.example.tpanexoa.ui.miUbicacion;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import usuario.example.tpanexoa.R;
 
@@ -69,10 +64,13 @@ public class MiUbicacionFragment extends Fragment implements OnMapReadyCallback 
                 if (location != null) {
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+
+                    agregarMarcadores(); // Agregar marcadores de los mercados cercanos
                 }
             });
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -92,4 +90,13 @@ public class MiUbicacionFragment extends Fragment implements OnMapReadyCallback 
             }
         }
     }
+
+    private void agregarMarcadores() {
+        LatLng mercado1 = new LatLng(-33.1862969, -66.3230453); // Coordenadas del mercado 1
+        mMap.addMarker(new MarkerOptions().position(mercado1).title("Mercado 1"));
+
+        LatLng mercado2 = new LatLng(-33.1854686, -66.3224754); // Coordenadas del mercado 2
+        mMap.addMarker(new MarkerOptions().position(mercado2).title("Mercado 2"));
+    }
+
 }
